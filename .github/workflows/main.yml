@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,8 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y build-essential clang python3 git
+          brew install unifdef
+          xcodebuild -license accept
 
       - name: Init config
         run: cd UniXNU && ./unixnu defconfig gauguin_defconfig -D ../UniXNU-gauguin

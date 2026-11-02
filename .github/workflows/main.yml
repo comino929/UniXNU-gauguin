@@ -1,1 +1,45 @@
-name: Build gauguin iOSon:  workflow_dispatch:jobs:  build:    runs-on: ubuntu-latest    steps:      - name: Checkout        uses: actions/checkout@v4        with:          path: UniXNU-gauguin      - name: Clone main repo        run: git clone --recurse-submodules https://github.com/lvyufeng/UniXNU.git      - name: Clone UEFI repo        run: git clone https://github.com/lvyufeng/uefi-gauguin.git      - name: Install dependencies        run: |          sudo apt update          sudo apt install -y build-essential clang python3 git      - name: Init config        run: cd UniXNU && ./unixnu defconfig gauguin_defconfig -D ../UniXNU-gauguin      - name: Fetch dependencies        run: cd UniXNU && ./unixnu fetch      - name: Build kernel        run: cd UniXNU && ./unixnu build kernel      - name: Build package        run: cd UniXNU && ./unixnu build package      - name: Build firmware        run: cd UniXNU && ./unixnu build firmware --uefi ../uefi-gauguin      - name: Upload artifact        uses: actions/upload-artifact@v4        with:          name: gauguin-ios-firmware          path: UniXNU/out/gauguin/
+name: Build gauguin iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: UniXNU-gauguin
+
+      - name: Clone main repo
+        run: git clone --recurse-submodules https://github.com/lvyufeng/UniXNU.git
+
+      - name: Clone UEFI repo
+        run: git clone https://github.com/lvyufeng/uefi-gauguin.git
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential clang python3 git
+
+      - name: Init config
+        run: cd UniXNU && ./unixnu defconfig gauguin_defconfig -D ../UniXNU-gauguin
+
+      - name: Fetch dependencies
+        run: cd UniXNU && ./unixnu fetch
+
+      - name: Build kernel
+        run: cd UniXNU && ./unixnu build kernel
+
+      - name: Build package
+        run: cd UniXNU && ./unixnu build package
+
+      - name: Build firmware
+        run: cd UniXNU && ./unixnu build firmware --uefi ../uefi-gauguin
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gauguin-ios-firmware
+          path: UniXNU/out/gauguin/
